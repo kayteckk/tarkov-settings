@@ -15,8 +15,7 @@ Automatically change color settings for [Escape from Tarkov](https://escapefromt
 - Applies the correct brightness, contrast, gamma, and saturation profile based on the focused game process.
 - Stores settings in `%LOCALAPPDATA%\Tarkov Settings\settings.json` instead of the current working directory.
 - Added Escape from Tarkov: Arena process detection.
-- Modernized the project to SDK-style WinForms on .NET 8.
-- Removed legacy `packages.config`, Fody/Costura, and old .NET Framework project config.
+- Keeps the release target on .NET Framework 4.7.2 for a small app package.
 
 ## How it works?
 - Changes Digital Vibrance value from Nvidia Settings using [NvAPIWrapper](https://github.com/falahati/NvAPIWrapper)
