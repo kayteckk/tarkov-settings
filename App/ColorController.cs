@@ -101,12 +101,7 @@ namespace tarkov_settings
                     currentRamps.Red = currentRamps.Blue = currentRamps.Green = iArrayValue;
 
                     _canceller = new CancellationTokenSource();
-                    CancellationToken token;
-                    try
-                    {
-                        token = _canceller.Token;
-                    }
-                    catch (ObjectDisposedException) { }
+                    CancellationToken token = _canceller.Token;
 
                     await Task.Run(() =>
                     {

@@ -102,14 +102,15 @@ namespace tarkov_settings
          */
         public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
+            string activeProcess = NativeMethods.GetActiveWindowTitle();
             Console.WriteLine("Running Tasks : {0}", GetWorkingThreads());
-            Console.WriteLine("Focused Process : {0}", NativeMethods.GetActiveWindowTitle());
+            Console.WriteLine("Focused Process : {0}", activeProcess);
 
-            if (this.pTargets.Contains(NativeMethods.GetActiveWindowTitle().ToLower()) && Parent.IsEnabled)
+            if (!string.IsNullOrEmpty(activeProcess) && this.pTargets.Contains(activeProcess.ToLower()) && Parent.IsEnabled)
             {
                 Console.WriteLine("[pMonitor] Target Process is focused");
 
-                var (b, c, g, dvl) = Parent.GetColorValue();
+                var (b, c, g, dvl) = Parent.GetColorValue(activeProcess);
                 cController.ChangeColorRamp(brightness: b,
                                             contrast: c,
                                             gamma: g,

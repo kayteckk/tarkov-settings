@@ -13,6 +13,8 @@ namespace tarkov_settings
         private AppSetting appSetting;
 
         private bool minimizeOnStart = false;
+        private string activeProcessTarget = AppSetting.EFT_PROCESS;
+        private bool isLoadingColorProfile = false;
 
         public MainForm()
         {
@@ -21,11 +23,9 @@ namespace tarkov_settings
             #region Load App Settings
             // Load Settings
             appSetting = AppSetting.Load();
+            appSetting.EnsureDefaults();
 
-            Brightness = appSetting.brightness;
-            Contrast = appSetting.contrast;
-            Gamma = appSetting.gamma;
-            DVL = appSetting.saturation;
+            SelectProcessProfile(AppSetting.EFT_PROCESS, false);
             minimizeOnStart = appSetting.minimizeOnStart;
             this.minimizeStartCheckBox.Checked = minimizeOnStart;
             #endregion
@@ -87,11 +87,24 @@ namespace tarkov_settings
 
         public (double, double, double, int) GetColorValue()
         {
+            SyncActiveColorProfile();
             return (
                 BrightnessBar.Value / 100.0,
                 ContrastBar.Value / 100.0,
                 GammaBar.Value / 100.0,
                 DVLBar.Value
+                );
+        }
+
+        public (double, double, double, int) GetColorValue(string processTarget)
+        {
+            SyncActiveColorProfile();
+            ColorProfile profile = appSetting.GetColorProfile(processTarget);
+            return (
+                profile.brightness,
+                profile.contrast,
+                profile.gamma,
+                profile.saturation
                 );
         }
         #endregion
@@ -155,6 +168,8 @@ namespace tarkov_settings
             {
                 DVLText.Text = DVLBar.Value.ToString();
             }
+
+            SyncActiveColorProfile();
         }
         private void DisplayCombo_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -176,10 +191,12 @@ namespace tarkov_settings
 
         private void ExitFormClicked(object sender, EventArgs e)
         {
-            appSetting.brightness = Brightness;
-            appSetting.contrast = Contrast;
-            appSetting.gamma = Gamma;
-            appSetting.saturation = DVL;
+            SyncActiveColorProfile();
+            ColorProfile eftProfile = appSetting.GetColorProfile(AppSetting.EFT_PROCESS);
+            appSetting.brightness = eftProfile.brightness;
+            appSetting.contrast = eftProfile.contrast;
+            appSetting.gamma = eftProfile.gamma;
+            appSetting.saturation = eftProfile.saturation;
             appSetting.display = (string)DisplayCombo.SelectedItem;
             appSetting.minimizeOnStart = minimizeOnStart;
             appSetting.Save();
@@ -206,6 +223,59 @@ namespace tarkov_settings
         private void CheckOnMinimizeToTray(object sender, EventArgs e)
         {
             this.minimizeOnStart = this.minimizeStartCheckBox.Checked;
+        }
+
+        private void EFTProfileButton_Click(object sender, EventArgs e)
+        {
+            SelectProcessProfile(AppSetting.EFT_PROCESS);
+        }
+
+        private void ArenaProfileButton_Click(object sender, EventArgs e)
+        {
+            SelectProcessProfile(AppSetting.ARENA_PROCESS);
+        }
+
+        private void SelectProcessProfile(string processTarget, bool saveCurrentProfile = true)
+        {
+            if (appSetting == null)
+                return;
+
+            if (saveCurrentProfile)
+                SyncActiveColorProfile();
+
+            activeProcessTarget = processTarget;
+            ColorProfile profile = appSetting.GetColorProfile(activeProcessTarget);
+
+            isLoadingColorProfile = true;
+            try
+            {
+                Brightness = profile.brightness;
+                Contrast = profile.contrast;
+                Gamma = profile.gamma;
+                DVL = profile.saturation;
+            }
+            finally
+            {
+                isLoadingColorProfile = false;
+            }
+
+            UpdateProfileButtons();
+        }
+
+        private void SyncActiveColorProfile()
+        {
+            if (appSetting == null || isLoadingColorProfile)
+                return;
+
+            appSetting.SetColorProfile(activeProcessTarget, Brightness, Contrast, Gamma, DVL);
+        }
+
+        private void UpdateProfileButtons()
+        {
+            bool isEftProfile = activeProcessTarget == AppSetting.EFT_PROCESS;
+            MiscsButton.Checked = isEftProfile;
+            ColorButton.Checked = !isEftProfile;
+            colorGroupBox.Text = isEftProfile ? "EFT Color" : "EFT: Arena Color";
         }
     }
 }

@@ -130,16 +130,17 @@
             // 
             // MiscsButton
             // 
-            this.MiscsButton.Enabled = false;
+            this.MiscsButton.CheckOnClick = true;
             this.MiscsButton.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MiscsButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.MiscsButton.Image = global::tarkov_settings.Properties.Resources.nikita;
             this.MiscsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.MiscsButton.Name = "MiscsButton";
             this.MiscsButton.Size = new System.Drawing.Size(73, 74);
-            this.MiscsButton.Text = "Miscs";
+            this.MiscsButton.Text = "EFT";
             this.MiscsButton.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.MiscsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.MiscsButton.Click += new System.EventHandler(this.EFTProfileButton_Click);
             // 
             // ColorButton
             // 
@@ -149,8 +150,9 @@
             this.ColorButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ColorButton.Name = "ColorButton";
             this.ColorButton.Size = new System.Drawing.Size(73, 74);
-            this.ColorButton.Text = "Color";
+            this.ColorButton.Text = "EFT:Arena";
             this.ColorButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.ColorButton.Click += new System.EventHandler(this.ArenaProfileButton_Click);
             // 
             // ColorPanel
             // 
