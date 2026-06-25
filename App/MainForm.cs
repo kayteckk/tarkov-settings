@@ -191,21 +191,14 @@ namespace tarkov_settings
 
         private void ExitFormClicked(object sender, EventArgs e)
         {
-            SyncActiveColorProfile();
-            ColorProfile eftProfile = appSetting.GetColorProfile(AppSetting.EFT_PROCESS);
-            appSetting.brightness = eftProfile.brightness;
-            appSetting.contrast = eftProfile.contrast;
-            appSetting.gamma = eftProfile.gamma;
-            appSetting.saturation = eftProfile.saturation;
-            appSetting.display = (string)DisplayCombo.SelectedItem;
-            appSetting.minimizeOnStart = minimizeOnStart;
-            appSetting.Save();
-
+            SaveSettings();
             Application.Exit();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            SaveSettings();
+
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 e.Cancel = true;
@@ -223,6 +216,7 @@ namespace tarkov_settings
         private void CheckOnMinimizeToTray(object sender, EventArgs e)
         {
             this.minimizeOnStart = this.minimizeStartCheckBox.Checked;
+            SaveSettings();
         }
 
         private void EFTProfileButton_Click(object sender, EventArgs e)
@@ -268,6 +262,26 @@ namespace tarkov_settings
                 return;
 
             appSetting.SetColorProfile(activeProcessTarget, Brightness, Contrast, Gamma, DVL);
+        }
+
+        private void SaveSettings()
+        {
+            if (appSetting == null)
+                return;
+
+            SyncActiveColorProfile();
+
+            ColorProfile eftProfile = appSetting.GetColorProfile(AppSetting.EFT_PROCESS);
+            appSetting.brightness = eftProfile.brightness;
+            appSetting.contrast = eftProfile.contrast;
+            appSetting.gamma = eftProfile.gamma;
+            appSetting.saturation = eftProfile.saturation;
+
+            if (DisplayCombo.SelectedItem != null)
+                appSetting.display = (string)DisplayCombo.SelectedItem;
+
+            appSetting.minimizeOnStart = minimizeOnStart;
+            appSetting.Save();
         }
 
         private void UpdateProfileButtons()

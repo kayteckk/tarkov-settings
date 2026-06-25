@@ -9,6 +9,10 @@ Automatically change color settings for [Escape from Tarkov](https://escapefromt
 
 ## Patch Notes
 
+### 1.3.1
+- Fixed settings not always being saved when Windows closes the app during shutdown or restart.
+- Saves settings when the main window is closed to tray and when `Start minimized` is changed.
+
 ### 1.3.0
 - Added separate color profiles for Escape from Tarkov and Escape from Tarkov: Arena.
 - Reworked the side buttons: `EFT` edits the main game profile, and `EFT:Arena` edits the Arena profile.
@@ -46,7 +50,7 @@ You can change any of the following color settings:
 5. Minimize and play EFT or EFT:Arena.
 6. Close application if you want to deactivate.
 
-**Exit the app from your taskbar to create a `settings.json` file that will remember your settings**
+Settings are stored in `%LOCALAPPDATA%\Tarkov Settings\settings.json` and are saved when the app exits, when the window is closed to tray, and when Windows shuts down or restarts.
 
 ## Warning
 1. It might blink couple times when you active EFT window but it works. Don't worry.
